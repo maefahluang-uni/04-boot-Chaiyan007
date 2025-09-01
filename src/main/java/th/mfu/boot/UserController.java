@@ -17,20 +17,29 @@ public class UserController {
 
     public static Map<String, User> users = new HashMap<String, User>();
 
-   
-    public ResponseEntity<String> registerUser( User user) {
+   @PostMapping ("/user")
+    public ResponseEntity<String> registerUser(@RequestBody User user) {
       //TODO
-      return null;
+       if (users.containsKey(user.getUsername())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Username already exists");
+    } 
+        users.put(user.getUsername(), user);
+        return ResponseEntity.status(HttpStatus.OK).body("User registered successfully");
     }
 
+   @GetMapping("/users")
     public ResponseEntity<Collection<User>> list() {
         //TODO
-        return null;
-    }
-
+         return ResponseEntity.ok(users.values());  
+        }
+        
+   @GetMapping("/users/{username}")
     public ResponseEntity<User> getUser(String username) {
         //TODO
-        return null;
+        User user = users.get(username);
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(user);
     }
-    
-}
+    }
